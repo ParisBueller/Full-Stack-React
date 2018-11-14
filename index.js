@@ -4,7 +4,7 @@ const app = express();
 //by calling .get() we are creating a new route handler
 //in this case, requests trying to access '/'
 app.get('/', (req, res) => {
-    res.send({ hi: 'there' });
+    res.send({ bye: 'buddy' });
 });
 
 //whenever Heroku runs our app, it has the ability to inject environment variables(provess.env).
