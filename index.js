@@ -11,7 +11,14 @@ mongoose.connect(keys.mongoURI);
 
 const app = express();
 
+//app.use() wires up middleware
+//middleware are small functions that can modify incoming requests
+//before they are sent off to route handlers
 app.use(
+  //cookie-session and express-session are two cookie handlers recommended by express
+  //cookie-session: assigns data to a cookie, then takes data out of that cookie
+  //and assigns it to req.session property
+  //express-session: stores a reference to a session inside the cookie
   cookieSession({
       //maxAge = how long before cookie expires
     maxAge: 30 * 24 * 60 * 60 * 1000,
