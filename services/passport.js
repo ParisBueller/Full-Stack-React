@@ -30,21 +30,17 @@ passport.use(
         callbackURL: '/auth/google/callback',
         proxy: true
     }, 
-    (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, profile, done) => {
         //.findOne is a mongoose method used to find one specific document
-        User.findOne({ googleId: profile.id })
-            .then( existingUser => {
-                //we already have a user with the given id
-                if (existingUser) {
-                    //done expects two arguments, null and user record
-                    done(null,existingUser);
-                } else {
-                    //we do not have a record for this user, make a new record
-                    new User({ googleId: profile.id })
-                        .save()
-                        .then(user => done(null, user));
-                }
-            });
-        }
+        const existingUser = await User.findOne({ googleId: profile.id })
+        //we already have a user with the given id
+        if (existingUser) {
+            //done expects two arguments, null and user record
+            return done(null, existingUser);
+        }   
+        //we do not have a record for this user, make a new record
+        const user = await new User({ googleId: profile.id }).save()
+        done(null, user);
+        }       
     )
 );
