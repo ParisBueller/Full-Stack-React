@@ -9,13 +9,20 @@ module.exports = (app) => {
     );
 //for all route handlers, the first argument is the route
 //second argument is the function to be executed whenever route is accessed
-app.get('/auth/google/callback', passport.authenticate('google'));
+app.get(
+    '/auth/google/callback', 
+    passport.authenticate('google'),
+    //once done authenticating, redirect the user to /surveys route
+    (req, res) => {
+        res.redirect('/surveys');
+        }
+    );
 
 app.get('/api/logout', (req, res) => {
     //logout is a function automatically attached 
     //to the request(req) object by passport
     req.logout();
-    res.send(req.user);
+    res.redirect('/');
 });
 
 app.get('/api/current_user', (req, res) => {
