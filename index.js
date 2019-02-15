@@ -29,7 +29,10 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//both route files return a function and are then
+//immediately called with the express app object
 require('./routes/authRoutes')(app);
+require('./routes/billingRoutes')(app)
 
 //environment variables(process.env) are variables that are set in the underlying runtime.
 //to keep hosting in a development environment i.e. local host, we add a boolean statement( || 5000).
