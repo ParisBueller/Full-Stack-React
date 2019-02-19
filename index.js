@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieSession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser');
 const keys = require('./config/keys');
 require('./models/User');
 require('./services/passport');
@@ -14,6 +15,7 @@ const app = express();
 //app.use() wires up middleware
 //middleware are small functions that can modify incoming requests
 //before they are sent off to route handlers
+app.use(bodyParser.json());
 app.use(
   //cookie-session and express-session are two cookie handlers recommended by express
   //cookie-session: assigns data to a cookie, then takes data out of that cookie
