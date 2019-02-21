@@ -34,7 +34,21 @@ app.use(passport.session());
 //both route files return a function and are then
 //immediately called with the express app object
 require('./routes/authRoutes')(app);
-require('./routes/billingRoutes')(app)
+require('./routes/billingRoutes')(app);
+
+//check if our environment is development or production so that
+// our routes defined by React Router AND NOT on our express server
+//can be handled correctly
+if (process.env.NODE_ENV === 'production') {
+  // Express will serve up production assets i.e. main.js, main.css
+  app.use(express.static('client/build'));
+
+  //Express will serve up index.html filed if it doesn't recognize the route
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  })
+}
 
 //environment variables(process.env) are variables that are set in the underlying runtime.
 //to keep hosting in a development environment i.e. local host, we add a boolean statement( || 5000).
