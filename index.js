@@ -36,6 +36,7 @@ app.use(passport.session());
 //immediately called with the express app object
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 //check if our environment is development or production so that
 // our routes defined by React Router AND NOT on our express server
