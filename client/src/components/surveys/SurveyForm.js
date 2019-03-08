@@ -5,6 +5,7 @@ import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 
 import SurveyField from './SurveyField';
+import validateEmails from '../../utils/validateEmails';
 //Fields array to customize Field tags to keep from bloating JSX
 const FIELDS = [
     {label: 'Survey Title', name: 'title'},
@@ -55,6 +56,8 @@ class SurveyForm extends Component {
 // to the different fields you are rendering
 function validate(values) {
      const errors = {};
+    //run our imported validateEmails function
+     errors.emails = validateEmails(values.emails || '' );
     //for each name property in the FIELDS array
     //check if a value was provided, if not 
     //return an error message prompting an input value
@@ -63,6 +66,7 @@ function validate(values) {
              errors[name] = 'You must provide a value'
          }
      });
+ 
      //if our errors object remains empty, proceed to submit
      return errors;
 }
