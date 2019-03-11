@@ -35,8 +35,8 @@ class SurveyForm extends Component {
     render() {
         return (
             <div>
-                <form onSubmit={this.props.handleSubmit(values => console.log(values))}>
-                    {this.renderFields()}
+                <form onSubmit={this.props.handleSubmit(this.props.onSurveySubmit)}>
+                {this.renderFields()}
                     <Link to="/surveys" className="red btn-flat white-text">
                     Cancel
                     </Link>
@@ -76,7 +76,10 @@ function validate(values) {
 //only REQUIRES one option:: form.
 //we can also pass the validate option and pass in a function
 //that validates the fields every time the user submits the form
+//destroyOnUnmount: lets you keep form values instead of
+//dumping them when the form is no longer being rendered
 export default reduxForm({
     validate,
-    form: 'surveyForm'
+    form: 'surveyForm',
+    destroyOnUnmount: false
 })(SurveyForm);
