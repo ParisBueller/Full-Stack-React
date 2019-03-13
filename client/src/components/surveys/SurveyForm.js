@@ -6,20 +6,14 @@ import { Link } from 'react-router-dom';
 
 import SurveyField from './SurveyField';
 import validateEmails from '../../utils/validateEmails';
-//Fields array to customize Field tags to keep from bloating JSX
-const FIELDS = [
-    {label: 'Survey Title', name: 'title'},
-    {label: 'Subject Line', name: 'subject'},
-    {label: 'Email Body', name: 'body'},
-    {label: 'Recipient List', name: 'emails'}
-];
+import formFields from './formFields';
 
 class SurveyForm extends Component {
     renderFields() {
         //iterate over our list of above defined FIELDS array with lodash
         // and for every object in there return a custom Redux form <Field /> 
         //with custom label and name properties
-        return _.map(FIELDS, ({label, name}) => {
+        return _.map(formFields, ({label, name}) => {
             return (
                 <Field 
                     key={name} 
@@ -61,7 +55,7 @@ function validate(values) {
     //for each name property in the FIELDS array
     //check if a value was provided, if not 
     //return an error message prompting an input value
-     _.each(FIELDS, ({ name }) => {
+     _.each(formFields, ({ name }) => {
          if (!values[name]) {
              errors[name] = 'You must provide a value'
          }
