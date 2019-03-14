@@ -51,7 +51,7 @@ class SurveyForm extends Component {
 function validate(values) {
      const errors = {};
     //run our imported validateEmails function
-     errors.emails = validateEmails(values.emails || '' );
+     errors.recipients = validateEmails(values.recipients || '' );
     //for each name property in the FIELDS array
     //check if a value was provided, if not 
     //return an error message prompting an input value
