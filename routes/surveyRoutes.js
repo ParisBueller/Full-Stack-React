@@ -14,6 +14,12 @@ module.exports = app => {
     app.get('/api/surveys/thanks', (req, res) => {
         res.send('Thanks for voting!');
     });
+
+    //webhook post route for clicked email notification
+    app.post('/api/surveys/webhooks', (req, res) => {
+        console.log(req.body);
+        res.send({});
+    });
     
     //post request to send emails
     app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
