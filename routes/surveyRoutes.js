@@ -10,35 +10,32 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 
 const Survey = mongoose.model('surveys');
 
-//we must add our arguments to route handlers IN THE ORDER WE
-//WANT THEM TO BE EXECUTED!!
+//we must add our arguments to route handlers IN THE ORDER WE WANT THEM TO BE EXECUTED!!
 module.exports = app => {
-    // vote redirect
+    //vote redirect
     app.get('/api/surveys/thanks', (req, res) => {
         res.send('Thanks for voting!');
     });
 
     //webhook post route for clicked email notification
     app.post('/api/surveys/webhooks', (req, res) => {
+        const p = new Path('/api/surveys/:surveyId/:choice');
         //iterate over our req.body(list of events)
-        const events = _.map(req.body, ({ email, url }) => {
-            //step 1: extract the pathname of the url
-            const pathname = new URL(url).pathname;
-            //step 2: extract just the survey id and choice(yes/no) from the pathname
-            const p = new Path('/api/surveys/:surveyId/:choice');
-            const match = p.test(pathname);
+        //extract the pathname/survey id and choice(yes/no) from the URL
+        //remove undefined and duplicate elements
+        const events = _.chain(req.body)
+            .map(({ email, url }) => {
+             
+            const match = p.test(new URL(url).pathname);
             if (match) {
                 return { email, surveyId: match.surveyId, choice: match.choice };
             }
-        });
-        //lodash .compact() takes an array goes through the array
-        //and removes any elements that are undefined
-        const compactEvents = _.compact(events);
-        //lodash uniqBy() goes through elements and removes duplicates
-        //so a user cannot vote on the same survey multiple times
-        const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId');
+        })
+            .compact()
+            .uniqBy('email', 'surveyId')
+            .value();
 
-        console.log(uniqueEvents);
+        console.log(events);
 
         res.send({});
     });
