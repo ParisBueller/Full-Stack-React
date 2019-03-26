@@ -13,7 +13,7 @@ const Survey = mongoose.model('surveys');
 //we must add our arguments to route handlers IN THE ORDER WE WANT THEM TO BE EXECUTED!!
 module.exports = app => {
     //vote redirect
-    app.get('/api/surveys/thanks', (req, res) => {
+    app.get('/api/surveys/:surveyId/:choice', (req, res) => {
         res.send('Thanks for voting!');
     });
 
@@ -23,7 +23,7 @@ module.exports = app => {
         //iterate over our req.body(list of events)
         //extract the pathname/survey id and choice(yes/no) from the URL
         //remove undefined and duplicate elements
-        const events = _.chain(req.body)
+        _.chain(req.body)
             .map(({ email, url }) => {
              
             const match = p.test(new URL(url).pathname);
@@ -33,9 +33,25 @@ module.exports = app => {
         })
             .compact()
             .uniqBy('email', 'surveyId')
+            .each(({ surveyId, email, choice }) => {
+                Survey.updateOne({
+                    //find the survey with a corresponding id
+                    _id: surveyId,
+                    //match the recipient subdocument within that id
+                    recipients: {
+                        $elemMatch: { email: email, responded : false }
+                        }
+                    }, 
+                    {
+                    //$inc is a mongo operator that allows us to find
+                    //in this case find the 'choice' property and increment it
+                    $inc: {  [choice]: 1 },
+                    //$set will set the recipient responded in mongo to true
+                    $set: { 'recipients.$.responded': true },
+                    lastResponded: new Date()
+                }).exec()
+            })
             .value();
-
-        console.log(events);
 
         res.send({});
     });
