@@ -12,6 +12,17 @@ const Survey = mongoose.model('surveys');
 
 //we must add our arguments to route handlers IN THE ORDER WE WANT THEM TO BE EXECUTED!!
 module.exports = app => {
+    //Fetch a list of surveys
+    app.get('/api/surveys', requireLogin, async (req, res) => {
+        //find all mongo records with _user property = req.user.id
+        //.select() lets us customize a query so we dont return records
+        //we do not need
+        const surveys = await Survey.find({ _user: req.user.id })
+            .select({ recipients: false });
+
+        res.send(surveys);
+    });
+
     //vote redirect
     app.get('/api/surveys/:surveyId/:choice', (req, res) => {
         res.send('Thanks for voting!');
@@ -21,7 +32,7 @@ module.exports = app => {
     app.post('/api/surveys/webhooks', (req, res) => {
         const p = new Path('/api/surveys/:surveyId/:choice');
         //iterate over our req.body(list of events)
-        //extract the pathname/survey id and choice(yes/no) from the URL
+        //extract the pathname,survey id and choice(yes/no) from the URL
         //remove undefined and duplicate elements
         _.chain(req.body)
             .map(({ email, url }) => {
